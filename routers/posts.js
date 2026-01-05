@@ -9,23 +9,48 @@ const postRouter = express.Router();
  * 
  */
 
-// Index -> Get
+// Index -> Get (prende anche le query string param)
 postRouter.get("/", (req,res) => {
-    const dataResponse = {
+
+   const {titolo, contenuto, tags} = req.query;
+   // console.log(`id: ${id}`);
+   // console.log(`contenuto: ${contenuto}`);
+   // console.log(`immagine: ${immagine}`);
+   // console.log(`tags: ${tags}`);
+   // console.log(`titolo: ${titolo}`);
+   
+   let filteredPost = dataPost;
+   
+   if(titolo !== undefined){
+      filteredPost = filteredPost.filter((curPost)=> curPost.titolo.toLowerCase().includes(titolo.toLowerCase()))
+   }
+   // console.log("filteredPost",filteredPost)
+   if(contenuto !== undefined){
+      filteredPost = filteredPost.filter((curPost)=> curPost.contenuto.toLowerCase().includes(contenuto.toLowerCase()))
+   }
+   // if(tags !== undefined){
+   //    filteredPost = filteredPost.filter((curPost)=> curPost.tags.filter((curTag) => {curTag.toLowerCase().includes(tags)}))
+   // }
+   
+   
+   const dataResponse = {
       "info" : {
-         "lenght" : dataPost.length,
+         "lenght" : filteredPost.length,
       },
       "data" : {
-         "posts" : dataPost,
+         "posts" : filteredPost,
       }
    }
+
    res.json(dataResponse)
  })
 
 // Show -> Get
 postRouter.get("/:id", (req, res) => {
    const {id} = req.params;
-   res.send(`Singolo Post: ${id}`)
+   const dataResponse = dataPost.filter((curPost) => curPost.id === parseInt(id))
+   res.json(...dataResponse)
+
 })
 
 // Store -> Post
