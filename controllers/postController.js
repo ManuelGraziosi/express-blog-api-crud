@@ -91,7 +91,7 @@ const update = (req, res) => {
     };
 
     dataPost.splice(dataPost.indexOf(post), 1, updatedPost);
-    res.send(`Aggiorno completamente Post: ${id}`);
+    res.json(updatedPost);
   }
 };
 
