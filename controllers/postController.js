@@ -54,7 +54,18 @@ const show = (req, res) => {
 };
 
 const store = (req, res) => {
-  res.send(`Creo Post`);
+  const newPostData = req.body;
+
+  const lastIndexElemID = dataPost[dataPost.length - 1].id;
+  const newID = lastIndexElemID + 1;
+  const newPost = {
+    id: newID,
+    ...newPostData,
+  };
+  dataPost.push(newPost);
+
+  res.status(201);
+  res.json(newPost);
 };
 
 const update = (req, res) => {
