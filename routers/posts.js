@@ -81,8 +81,20 @@ postRouter.patch("/:id", (req, res) => {
 
  // Destroy -> Delete
 postRouter.delete("/:id", (req, res) => {
-   const {id} = req.params;
-   res.send(`Cancello Post: ${id}`)
+   const id = parseInt(req.params.id);
+   //Trovare il post cercato se esiste
+   const post = dataPost.find((curPost) => curPost.id === id);
+
+   if (post === undefined){
+      res.status(404);
+      res.json({
+         "err" : "Not Found",
+         "message" : "Post non trovato"
+      })
+   }else{
+      dataPost.splice(dataPost.indexOf(post), 1)
+      res.sendStatus(204);
+   }
 })
 
 
