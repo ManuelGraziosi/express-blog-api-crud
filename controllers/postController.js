@@ -2,11 +2,6 @@ import dataPost from "../src/dataPosts.js";
 
 const index = (req, res) => {
   const { titolo, contenuto, tags } = req.query;
-  // console.log(`id: ${id}`);
-  // console.log(`contenuto: ${contenuto}`);
-  // console.log(`immagine: ${immagine}`);
-  // console.log(`tags: ${tags}`);
-  // console.log(`titolo: ${titolo}`);
 
   let filteredPost = dataPost;
 
@@ -60,7 +55,10 @@ const store = (req, res) => {
   const newID = lastIndexElemID + 1;
   const newPost = {
     id: newID,
-    ...newPostData,
+    titolo: newPostData.titolo,
+    contenuto: newPostData.contenuto,
+    immagine: newPostData.immagine,
+    tags: newPostData.tags,
   };
   dataPost.push(newPost);
 
@@ -69,8 +67,32 @@ const store = (req, res) => {
 };
 
 const update = (req, res) => {
-  const { id } = req.params;
-  res.send(`Aggiorno completamente Post: ${id}`);
+  const id = parseInt(req.params.id);
+
+  const dataRecived = req.body;
+  //console.log("UPDATE-Data:\r\n", id, "\r\n", dataRecived);
+
+  const post = dataPost.find((curPost) => curPost.id === id);
+  //console.log("UPDATE-RisultatoFind:", post);
+
+  if (post === undefined) {
+    res.status(404);
+    res.json({
+      err: "Not Found",
+      message: "Post non trovato",
+    });
+  } else {
+    const updatedPost = {
+      id: id,
+      titolo: dataRecived.titolo,
+      contenuto: dataRecived.contenuto,
+      immagine: dataRecived.immagine,
+      tags: dataRecived.tags,
+    };
+
+    dataPost.splice(dataPost.indexOf(post), 1, updatedPost);
+    res.send(`Aggiorno completamente Post: ${id}`);
+  }
 };
 
 const modify = (req, res) => {
@@ -91,6 +113,7 @@ const destroy = (req, res) => {
     });
   } else {
     dataPost.splice(dataPost.indexOf(post), 1);
+    console.log("Dati post eliminazione: \r\n", dataPost);
     res.sendStatus(204);
   }
 };
